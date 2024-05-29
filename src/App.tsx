@@ -17,11 +17,7 @@ const App: React.FC = () => {
 
     return (
         <div className="App">
-            <h1 className="">RSS Radar
-                {import.meta.env.PROD ? '' :
-                    <span className="text-red-500"> (Development)</span>
-                }
-            </h1>
+            <h1 className="">RSS Radar</h1>
             <SearchBar data={data} />
             <Card />
         </div>
