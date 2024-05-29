@@ -4,12 +4,6 @@
 
 :root {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    --text: #080304;
-    --background: #fcf6f7;
-    --primary: #cc3648;
-    --secondary: #e7808c;
-    --accent: #e85768;
-
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -18,6 +12,4 @@
 
 body {
     margin: 0;
-    background-color: var(--background);
-    color: var(--text);
 }

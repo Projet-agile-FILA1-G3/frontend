@@ -1,38 +1,76 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, KeyboardEvent } from 'react';
+import axios from 'axios';
+import Card from './Card';
 
-// Définition des types pour les props
-interface SearchBarProps {
-    data: string[];
-}
+interface SearchBarProps {}
 
-// Composant SearchBar
-const SearchBar: React.FC<SearchBarProps> = ({ data }) => {
-    // Définir l'état pour la requête de recherche et les données filtrées
+const SearchBar: React.FC<SearchBarProps> = () => {
     const [query, setQuery] = useState<string>('');
-    const [filteredData, setFilteredData] = useState<string[]>([]);
+    const [results, setResults] = useState<any[]>([]);
+    const [noResults, setNoResults] = useState<boolean>(false);
+    const [badRequest, setBadRequest] = useState<boolean>(false);
+    const [error, setError] = useState<boolean>(false);
 
-    // Gérer les changements de l'entrée utilisateur
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        setQuery(value);
-        filterData(value);
+        setQuery(event.target.value);
+        setNoResults(false);
+        setBadRequest(false);
+        setError(false);
     };
 
-    // Filtrer les données en fonction de la requête de recherche
-    const filterData = (query: string) => {
-        if (query.length > 0) {
-            const results = data.filter((item) =>
-                item.toLowerCase().includes(query.toLowerCase())
+    const handleKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            await searchAPI(query);
+        }
+    };
+
+    const searchAPI = async (query: string) => {
+        if (query.trim() === '') {
+            setBadRequest(true);
+            setResults([]);
+            return;
+        }
+
+        try {
+            const response = await axios.get(
+                `${import.meta.env.VITE_APP_API_BASE_URL}/search`,
+                {
+                    params: {
+                        query: query,
+                        limit: 10,
+                    },
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                }
             );
-            setFilteredData(results);
-        } else {
-            setFilteredData([]);
+
+            if (response.status === 204) {
+                setNoResults(true);
+                setResults([]);
+            } else {
+                setResults(response.data);
+                setNoResults(false);
+                setBadRequest(false);
+                setError(false);
+            }
+        } catch (error: any) {
+            if (error.response) {
+                if (error.response.status === 400) {
+                    setBadRequest(true);
+                } else {
+                    setError(true);
+                }
+            } else {
+                setError(true);
+            }
+            setResults([]);
         }
     };
 
     return (
-        <div className="max-w-md mx-auto w-full">
-            <div className="relative flex items-center w-full h-12 rounded-lg focus-within:shadow-lg bg-white overflow-hidden">
+        <div className="mx-auto w-full flex flex-col items-center">
+            <div className="relative flex items-center max-w-2xl m-8 w-full h-12 rounded-lg shadow-lg focus-within:ring-2 focus-within:ring-orange-500 bg-white overflow-hidden">
                 <div className="grid place-items-center h-full w-12 text-gray-300">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -55,18 +93,34 @@ const SearchBar: React.FC<SearchBarProps> = ({ data }) => {
                     type="text"
                     value={query}
                     onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
                     id="search"
                     placeholder="Search something.."
                 />
             </div>
-            {filteredData.length > 0 && (
-                <ul style={{ listStyleType: 'none', padding: 0 }}>
-                    {filteredData.map((item, index) => (
-                        <li key={index} style={{ padding: '5px 0' }}>
-                            {item}
-                        </li>
+            {noResults && <p className="text-red-500">No results found.</p>}
+            {badRequest && (
+                <p className="text-red-500">
+                    Bad request. Please enter a valid search term.
+                </p>
+            )}
+            {error && (
+                <p className="text-red-500">
+                    An error occurred while fetching data.
+                </p>
+            )}
+            {!noResults && !badRequest && !error && results.length > 0 && (
+                <div className="grid gap-4">
+                    {results.map((item, index) => (
+                        <Card
+                            key={index}
+                            title={item.title}
+                            description={item.description}
+                            link={item.link}
+                            pub_date={item.pub_date}
+                        />
                     ))}
-                </ul>
+                </div>
             )}
         </div>
     );
