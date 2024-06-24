@@ -1,11 +1,13 @@
 import React, { useState, ChangeEvent, KeyboardEvent } from 'react';
 import axios from 'axios';
 import Card from './Card';
+import Loader from './ui/Loader';
 
 interface SearchBarProps {}
 
 const SearchBar: React.FC<SearchBarProps> = () => {
     const [query, setQuery] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [results, setResults] = useState<any[]>([]);
     const [noResults, setNoResults] = useState<boolean>(false);
     const [badRequest, setBadRequest] = useState<boolean>(false);
@@ -30,6 +32,8 @@ const SearchBar: React.FC<SearchBarProps> = () => {
             setResults([]);
             return;
         }
+
+        setIsLoading(true); // Début du chargement
 
         try {
             const response = await axios.get(
@@ -65,6 +69,8 @@ const SearchBar: React.FC<SearchBarProps> = () => {
                 setError(true);
             }
             setResults([]);
+        } finally {
+            setIsLoading(false); // Fin du chargement
         }
     };
 
@@ -98,6 +104,7 @@ const SearchBar: React.FC<SearchBarProps> = () => {
                     placeholder="Search something.."
                 />
             </div>
+            {isLoading && <Loader />}
             {noResults && <p className="text-red-500">No results found.</p>}
             {badRequest && (
                 <p className="text-red-500">

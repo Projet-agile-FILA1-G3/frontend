@@ -11,10 +11,12 @@ const App: React.FC = () => {
         <Router>
             <div className="w-full h-screen overflow-scroll bg-slate-50">
                 <Navbar />
-                <Routes>
-                    <Route path="/" element={<SearchBar />} />
-                    <Route path="/page-one" element={<PageOne />} />
-                </Routes>
+                <div className="pb-12">
+                    <Routes>
+                        <Route path="/" element={<SearchBar />} />
+                        <Route path="/page-one" element={<PageOne />} />
+                    </Routes>
+                </div>
             </div>
         </Router>
     );
