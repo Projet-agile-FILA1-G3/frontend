@@ -9,7 +9,13 @@ interface CardProps {
     audio_link: string;
 }
 
-const Card: React.FC<CardProps> = ({ title, description, link, pub_date, audio_link }) => {
+const Card: React.FC<CardProps> = ({
+    title,
+    description,
+    link,
+    pub_date,
+    audio_link,
+}) => {
     const formattedDate = format(new Date(pub_date), 'MMMM d, yyyy h:mm a');
 
     const getFaviconUrl = (url: string) => {
@@ -17,7 +23,12 @@ const Card: React.FC<CardProps> = ({ title, description, link, pub_date, audio_l
         return `https://www.google.com/s2/favicons?domain=${domain}`;
     };
 
+    const getDomain = (url: string) => {
+        return new URL(url).hostname;
+    };
+
     const faviconUrl = getFaviconUrl(link);
+    const domain = getDomain(link);
 
     return (
         <div className="max-w-sm max-h-80 w-full lg:max-w-7xl lg:flex border-2 transition-transform duration-300 motion-safe:hover:scale-105">
@@ -28,7 +39,7 @@ const Card: React.FC<CardProps> = ({ title, description, link, pub_date, audio_l
                         "url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Jordan_Bardella_-_Strasbourg_European_Parliament_September_2022_%28cropped%29.jpg/1024px-Jordan_Bardella_-_Strasbourg_European_Parliament_September_2022_%28cropped%29.jpg')",
                 }}
             ></div> */}
-            <div className="  max-w-full lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
+            <div className="w-full lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
                 <div className="mb-8">
                     <a
                         href={link}
@@ -41,17 +52,15 @@ const Card: React.FC<CardProps> = ({ title, description, link, pub_date, audio_l
                     <p className="text-gray-700 text-base line-clamp-3">
                         {description}
                     </p>
-                    {
-                        audio_link ?
-                            <audio
-                                controls={true}
-                                src={audio_link}
-                                className='mt-4 px-5 w-full'
-                            >
-                            </audio>
-                            :
-                            <></>
-                    }
+                    {audio_link ? (
+                        <audio
+                            controls={true}
+                            src={audio_link}
+                            className="mt-4 px-5 w-full"
+                        ></audio>
+                    ) : (
+                        <></>
+                    )}
                 </div>
                 <p>{formattedDate}</p>
                 <div className="footer flex items-center max-w-full">
@@ -60,12 +69,9 @@ const Card: React.FC<CardProps> = ({ title, description, link, pub_date, audio_l
                         alt="Favicon"
                         className="w-4 h-4 mr-2"
                     />
-                    <a
-                        className="text-orange-800 truncate overflow-hidden whitespace-nowrap hover:underline hover:text-orange-600"
-                        href="{link}"
-                    >
-                        {link}
-                    </a>
+                    <span className="text-orange-900 truncate overflow-hidden whitespace-nowrap">
+                        {domain}
+                    </span>
                 </div>
             </div>
         </div>
