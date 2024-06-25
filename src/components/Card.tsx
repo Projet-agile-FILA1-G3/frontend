@@ -6,9 +6,10 @@ interface CardProps {
     description: string;
     link: string;
     pub_date: string;
+    audio_link: string;
 }
 
-const Card: React.FC<CardProps> = ({ title, description, link, pub_date }) => {
+const Card: React.FC<CardProps> = ({ title, description, link, pub_date, audio_link }) => {
     const formattedDate = format(new Date(pub_date), 'MMMM d, yyyy h:mm a');
 
     return (
@@ -33,6 +34,17 @@ const Card: React.FC<CardProps> = ({ title, description, link, pub_date }) => {
                     <p className="text-gray-700 text-base line-clamp-3">
                         {description}
                     </p>
+                    {
+                        audio_link ?
+                            <audio
+                                controls={true}
+                                src={audio_link}
+                                className='mt-4 px-5 w-full'
+                            >
+                            </audio>
+                            :
+                            <></>
+                    }
                 </div>
                 <p>{formattedDate}</p>
             </div>

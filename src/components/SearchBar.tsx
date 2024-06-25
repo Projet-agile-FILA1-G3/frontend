@@ -3,7 +3,7 @@ import axios from 'axios';
 import Card from './Card';
 import Loader from './ui/Loader';
 
-interface SearchBarProps {}
+interface SearchBarProps { }
 
 const SearchBar: React.FC<SearchBarProps> = () => {
     const [query, setQuery] = useState<string>('');
@@ -54,6 +54,7 @@ const SearchBar: React.FC<SearchBarProps> = () => {
                 setResults([]);
             } else {
                 setResults(response.data);
+                console.log(response.data);
                 setNoResults(false);
                 setBadRequest(false);
                 setError(false);
@@ -125,6 +126,7 @@ const SearchBar: React.FC<SearchBarProps> = () => {
                             description={item.description}
                             link={item.link}
                             pub_date={item.pub_date}
+                            audio_link={item.audio_link}
                         />
                     ))}
                 </div>
