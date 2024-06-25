@@ -11,6 +11,13 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({ title, description, link, pub_date }) => {
     const formattedDate = format(new Date(pub_date), 'MMMM d, yyyy h:mm a');
 
+    const getFaviconUrl = (url: string) => {
+        const domain = new URL(url).hostname;
+        return `https://www.google.com/s2/favicons?domain=${domain}`;
+    };
+
+    const faviconUrl = getFaviconUrl(link);
+
     return (
         <div className="max-w-sm max-h-80 w-full lg:max-w-7xl lg:flex border-2 transition-transform duration-300 motion-safe:hover:scale-105">
             {/* <div
@@ -20,7 +27,7 @@ const Card: React.FC<CardProps> = ({ title, description, link, pub_date }) => {
                         "url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Jordan_Bardella_-_Strasbourg_European_Parliament_September_2022_%28cropped%29.jpg/1024px-Jordan_Bardella_-_Strasbourg_European_Parliament_September_2022_%28cropped%29.jpg')",
                 }}
             ></div> */}
-            <div className="  lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
+            <div className="  max-w-full lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
                 <div className="mb-8">
                     <a
                         href={link}
@@ -35,6 +42,19 @@ const Card: React.FC<CardProps> = ({ title, description, link, pub_date }) => {
                     </p>
                 </div>
                 <p>{formattedDate}</p>
+                <div className="footer flex items-center max-w-full">
+                    <img
+                        src={faviconUrl}
+                        alt="Favicon"
+                        className="w-4 h-4 mr-2"
+                    />
+                    <a
+                        className="text-orange-800 truncate overflow-hidden whitespace-nowrap hover:underline hover:text-orange-600"
+                        href="{link}"
+                    >
+                        {link}
+                    </a>
+                </div>
             </div>
         </div>
     );
