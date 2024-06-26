@@ -7,6 +7,7 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
 } from '@/components/ui/navigation-menu';
+import Status from '@/components/Status.tsx';
 
 const Navbar: React.FC = () => {
     return (
@@ -48,6 +49,9 @@ const Navbar: React.FC = () => {
                                 Statistiques
                             </Link>
                         </NavigationMenuLink>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem>
+                        <Status />
                     </NavigationMenuItem>
                 </NavigationMenuList>
             </NavigationMenu>
