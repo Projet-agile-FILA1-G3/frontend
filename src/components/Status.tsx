@@ -3,8 +3,15 @@ import { cn } from '@/lib/utils.ts';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu.tsx';
 import "./status.css";
 
+interface Status {
+    status: any;
+    number_of_feeds: any;
+    number_of_articles: any;
+    last_fetching_date: any;
+}
+
 const Status = () => {
-    const [status, setStatus] = useState(null);
+    const [status, setStatus] = useState(null as Status | null);
 
     useEffect(() => {
         fetch(`${import.meta.env.VITE_APP_API_BASE_URL}/healthcheck`)
@@ -13,9 +20,6 @@ const Status = () => {
                 setStatus(data);
             });
     }, []);
-
-    console.log(status);
-
 
     return (
         <div className={cn(navigationMenuTriggerStyle(), 'flex items-center justify-center cursor-pointe status-icon')}>
