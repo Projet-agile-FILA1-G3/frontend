@@ -8,7 +8,9 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
+ARG MODE
+
+RUN npm run build:$MODE
 
 FROM nginx:alpine3.19
 
