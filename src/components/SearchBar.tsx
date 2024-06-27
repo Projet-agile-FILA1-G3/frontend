@@ -5,10 +5,11 @@ import Loader from './ui/Loader';
 interface SearchBarProps {
     apiUrl: string;
     placeholder?: string;
-    getParams: (query: string) => any;
+    getParams: (query: string, page: number, perPage: number) => any;
     processResults: (data: any) => void;
     renderResults: () => JSX.Element;
     onQueryChange: (query: string) => void;
+    onSearch: (query: string, page: number, perPage: number) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -36,11 +37,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
     const handleKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            await searchAPI(query);
+            performSearch(query, 1, 10); // Assuming default page = 1 and per_page = 10
         }
     };
 
-    const searchAPI = async (query: string) => {
+    const performSearch = async (query: string, page: number, perPage: number) => {
         if (query.trim() === '') {
             setBadRequest(true);
             setResults([]);
@@ -51,7 +52,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
         try {
             const response = await axios.get(apiUrl, {
-                params: getParams(query),
+                params: getParams(query, page, perPage),
                 headers: {
                     Accept: 'application/json',
                 },
@@ -61,7 +62,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 setNoResults(true);
                 setResults([]);
             } else {
-                setResults(response.data);
+                setResults(response.data.results);
                 processResults(response.data);
                 setNoResults(false);
                 setBadRequest(false);
