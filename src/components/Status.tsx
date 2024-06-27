@@ -30,19 +30,19 @@ const Status = () => {
                 <table className="table-auto">
                     <tbody>
                     <tr>
-                        <td><b>Crawler status</b></td>
+                        <td><b>Statut du crawler</b></td>
                         <td>{status?.status}</td>
                     </tr>
                     <tr>
-                        <td><b>Feeds number</b></td>
+                        <td><b>Nombre de flux</b></td>
                         <td>{status?.number_of_feeds}</td>
                     </tr>
                     <tr>
-                        <td><b>Articles number</b></td>
+                        <td><b>Nombre d'articles</b></td>
                         <td>{status?.number_of_articles}</td>
                     </tr>
                     <tr>
-                        <td><b>Last fetching date</b></td>
+                        <td><b>Dernière récupération</b></td>
                         <td>{new Date(status?.last_fetching_date).toLocaleString()}</td>
                     </tr>
                     </tbody>
