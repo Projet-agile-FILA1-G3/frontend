@@ -99,7 +99,7 @@ const SearchPage: React.FC = () => {
                 </PaginationItem>
             );
 
-            if (currentPage > 2) {
+            if (currentPage > 3) {
                 buttons.push(<PaginationItem key="ellipsis1"><PaginationEllipsis /></PaginationItem>);
             }
 
