@@ -35,13 +35,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
     const handleKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            performSearch(query, 1, 10); // Assuming default page = 1 and per_page = 10
+            await performSearch(query, 1, 10); // Assuming default page = 1 and per_page = 10
         }
     };
 
     const performSearch = async (query: string, page: number, perPage: number) => {
         if (query.trim() === '') {
             setBadRequest(true);
+            setIsLoading(false);
             return;
         }
 
@@ -121,7 +122,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 </p>
             )}
             {!noResults && !badRequest && !error && (
-                <div className="w-full flex flex-col items-center">
+                <div className="w-full flex flex-col items-center mt-4">
                     {renderResults()}
                 </div>
             )}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import Card from '../components/Card';
+import Loader from '../components/ui/Loader';
 import {
     Pagination,
     PaginationContent,
@@ -14,8 +15,9 @@ import {
 const SearchPage: React.FC = () => {
     const [results, setResults] = useState<any[]>([]);
     const [totalPages, setTotalPages] = useState<number>(0);
-    const [currentPage, setCurrentPage] = useState<number>(1); // Default current page
+    const [currentPage, setCurrentPage] = useState<number>(1);
     const [query, setQuery] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     const getParams = (query: string, page: number, perPage: number) => {
         return { query: query, page: page, per_page: perPage };
@@ -55,12 +57,20 @@ const SearchPage: React.FC = () => {
     };
 
     const searchAPI = async (query: string, page: number, perPage: number) => {
-        const response = await fetch(`${import.meta.env.VITE_APP_API_BASE_URL}/search?query=${query}&page=${page}&per_page=${perPage}`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        setLoading(true);
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_APP_API_BASE_URL}/search?query=${query}&page=${page}&per_page=${perPage}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            processResults(data);
+        } catch (error) {
+            console.error('Error fetching search results:', error);
+        } finally {
+            setLoading(false);
         }
-        const data = await response.json();
-        processResults(data);
     };
 
     const getPageButtons = () => {
@@ -165,19 +175,28 @@ const SearchPage: React.FC = () => {
 
     return (
         <div>
-            <SearchBar
-                apiUrl={`${import.meta.env.VITE_APP_API_BASE_URL}/search`}
-                getParams={getParams}
-                placeholder="Rechercher quelque chose..."
-                processResults={processResults}
-                renderResults={renderResults}
-                onQueryChange={handleQueryChange}
-            />
-            { totalPages !== 0 && (
+            <div className="relative mx-auto w-full flex flex-col items-center">
+                <SearchBar
+                    apiUrl={`${import.meta.env.VITE_APP_API_BASE_URL}/search`}
+                    getParams={getParams}
+                    placeholder="Rechercher quelque chose..."
+                    processResults={processResults}
+                    renderResults={renderResults}
+                    onQueryChange={handleQueryChange}
+                />
+                { loading && (
+                    <div className="absolute inset-0 bg-white bg-opacity-75 z-50 flex justify-center items-start">
+                        <div className="mt-20">
+                            <Loader />
+                        </div>
+                    </div>
+                )}
+            </div>
+            {!loading && results.length > 0 && (
                 <div className="mt-10">
                     <Pagination>
                         <PaginationContent>
-                            {currentPage > 1 && (
+                        {currentPage > 1 && (
                                 <PaginationItem>
                                     <PaginationPrevious
                                         href="#"
