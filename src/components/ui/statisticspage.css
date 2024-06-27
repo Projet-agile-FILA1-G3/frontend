@@ -3,5 +3,5 @@
 }
 
 .custom-not-selected {
-    @apply bg-gray-100;
+    @apply bg-white !important;
 }
