@@ -5,8 +5,6 @@ import SearchPage from './components/SearchPage';
 import StatisticsPage from './components/StatisticsPage';
 import Navbar from './components/Navbar';
 
-const PageOne: React.FC = () => <div>Page One Content</div>;
-
 const App: React.FC = () => {
     return (
         <Router>

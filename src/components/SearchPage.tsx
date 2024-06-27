@@ -28,6 +28,7 @@ const SearchPage: React.FC = () => {
 
     const handleQueryChange = (newQuery: string) => {
         setQuery(newQuery);
+        setCurrentPage(1);
         setTotalPages(0);
     };
 
