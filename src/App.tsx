@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import SearchBar from './components/SearchBar';
+import SearchPage from './components/SearchPage';
+import StatisticsPage from './components/StatisticsPage';
 import Navbar from './components/Navbar';
 
 const PageOne: React.FC = () => <div>Page One Content</div>;
@@ -13,8 +14,11 @@ const App: React.FC = () => {
                 <Navbar />
                 <div className="pb-12">
                     <Routes>
-                        <Route path="/" element={<SearchBar />} />
-                        <Route path="/page-one" element={<PageOne />} />
+                        <Route path="/" element={<SearchPage />} />
+                        <Route
+                            path="/statistics"
+                            element={<StatisticsPage />}
+                        />
                     </Routes>
                 </div>
             </div>
