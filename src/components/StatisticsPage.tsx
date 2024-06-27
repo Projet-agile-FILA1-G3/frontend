@@ -5,8 +5,10 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './ui/datepicker-custom.css';
+import './ui/statisticspage.css';
 import { registerLocale } from 'react-datepicker';
 import { fr } from 'date-fns/locale';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 registerLocale('fr', fr);
 
@@ -28,10 +30,10 @@ const StatisticsPage: React.FC = () => {
         }
     }, [interval, startDate, endDate]);
 
-    const handleIntervalChange = (
-        event: React.ChangeEvent<HTMLSelectElement>
-    ) => {
-        setInterval(event.target.value);
+    const handleIntervalChange = (value: string) => {
+        if (value && value !== interval) {
+            setInterval(value);
+        }
     };
 
     const handleStartDateChange = (date: Date | null) => {
@@ -99,50 +101,71 @@ const StatisticsPage: React.FC = () => {
                 renderResults={() => <div />}
                 onQueryChange={handleQueryChange}
             />
-            <div className="flex justify-start items-center space-x-40">
-                <div className="flex flex-col">
-                    <label htmlFor="interval" className="mb-1">
-                        Intervalle :{' '}
-                    </label>
-                    <select
-                        className="border border-gray-200 rounded-lg p-1 w-80"
-                        id="interval"
-                        value={interval}
-                        onChange={handleIntervalChange}
+            <div className="flex justify-between items-center space-x-40 w-4/5">
+                <div className="flex flex-row space-x-4">
+                    <div className="flex flex-col">
+                        <label
+                            htmlFor="startDate"
+                            className="mb-1 font-semibold text-orange-500 text-xs"
+                        >
+                            Date de début :{' '}
+                        </label>
+                        <DatePicker
+                            className="border border-gray-200 rounded-lg p-1 w-80"
+                            selected={startDate}
+                            onChange={handleStartDateChange}
+                            showTimeSelect
+                            timeCaption="Heure"
+                            dateFormat="dd/MM/yyyy, HH:mm"
+                            locale="fr"
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <label
+                            htmlFor="endDate"
+                            className="mb-1 font-semibold text-orange-500 text-xs"
+                        >
+                            Date de fin :{' '}
+                        </label>
+                        <DatePicker
+                            className="border border-gray-200 rounded-lg p-1 w-80"
+                            selected={endDate}
+                            onChange={handleEndDateChange}
+                            showTimeSelect
+                            timeCaption="Heure"
+                            dateFormat="dd/MM/yyyy, HH:mm"
+                            locale="fr"
+                        />
+                    </div>
+                </div>
+                <ToggleGroup
+                    type="single"
+                    value={interval}
+                    onValueChange={(value) => handleIntervalChange(value)}
+                    className="flex space-x-2"
+                >
+                    <ToggleGroupItem
+                        value="hour"
+                        aria-label="Heure"
+                        className={`p-3 border rounded-lg ${interval === 'hour' ? 'custom-selected' : 'custom-not-selected'}`}
                     >
-                        <option value="hour">Heure</option>
-                        <option value="day">Jour</option>
-                        <option value="week">Semaine</option>
-                    </select>
-                </div>
-                <div className="flex flex-col">
-                    <label htmlFor="startDate" className="mb-1">
-                        Date de début :{' '}
-                    </label>
-                    <DatePicker
-                        className="border border-gray-200 rounded-lg p-1 w-80"
-                        selected={startDate}
-                        onChange={handleStartDateChange}
-                        showTimeSelect
-                        timeCaption="Heure"
-                        dateFormat="dd/MM/yyyy, HH:mm"
-                        locale="fr"
-                    />
-                </div>
-                <div className="flex flex-col">
-                    <label htmlFor="endDate" className="mb-1">
-                        Date de fin :{' '}
-                    </label>
-                    <DatePicker
-                        className="border border-gray-200 rounded-lg p-1 w-80"
-                        selected={endDate}
-                        onChange={handleEndDateChange}
-                        showTimeSelect
-                        timeCaption="Heure"
-                        dateFormat="dd/MM/yyyy, HH:mm"
-                        locale="fr"
-                    />
-                </div>
+                        1H
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                        value="day"
+                        aria-label="Jour"
+                        className={`p-3 border rounded-lg ${interval === 'day' ? 'custom-selected' : 'custom-not-selected'}`}
+                    >
+                        1J
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                        value="week"
+                        aria-label="Semaine"
+                        className={`p-3 border rounded-lg ${interval === 'week' ? 'custom-selected' : 'custom-not-selected'}`}
+                    >
+                        7J
+                    </ToggleGroupItem>
+                </ToggleGroup>
             </div>
             <Chart data={results} />
         </div>
