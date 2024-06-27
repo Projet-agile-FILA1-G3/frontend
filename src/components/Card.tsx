@@ -1,5 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 interface CardProps {
     title: string;
@@ -16,7 +17,11 @@ const Card: React.FC<CardProps> = ({
     pub_date,
     audio_link,
 }) => {
-    const formattedDate = format(new Date(pub_date), 'MMMM d, yyyy h:mm a');
+    const formattedDate = format(
+        new Date(pub_date),
+        "'Publié le' d MMMM yyyy 'à' HH:mm",
+        { locale: fr }
+    );
 
     const getFaviconUrl = (url: string) => {
         const domain = new URL(url).hostname;

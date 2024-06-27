@@ -1,11 +1,24 @@
 import React, { useState, ChangeEvent, KeyboardEvent } from 'react';
 import axios from 'axios';
-import Card from './Card';
 import Loader from './ui/Loader';
 
-interface SearchBarProps { }
+interface SearchBarProps {
+    apiUrl: string;
+    placeholder?: string;
+    getParams: (query: string) => any;
+    processResults: (data: any) => void;
+    renderResults: () => JSX.Element;
+    onQueryChange: (query: string) => void;
+}
 
-const SearchBar: React.FC<SearchBarProps> = () => {
+const SearchBar: React.FC<SearchBarProps> = ({
+    apiUrl,
+    placeholder = 'Search something..',
+    getParams,
+    processResults,
+    renderResults,
+    onQueryChange,
+}) => {
     const [query, setQuery] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [results, setResults] = useState<any[]>([]);
@@ -15,6 +28,7 @@ const SearchBar: React.FC<SearchBarProps> = () => {
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setQuery(event.target.value);
+        onQueryChange(event.target.value);
         setNoResults(false);
         setBadRequest(false);
         setError(false);
@@ -33,28 +47,22 @@ const SearchBar: React.FC<SearchBarProps> = () => {
             return;
         }
 
-        setIsLoading(true); // Début du chargement
+        setIsLoading(true);
 
         try {
-            const response = await axios.get(
-                `${import.meta.env.VITE_APP_API_BASE_URL}/search`,
-                {
-                    params: {
-                        query: query,
-                        limit: 10,
-                    },
-                    headers: {
-                        Accept: 'application/json',
-                    },
-                }
-            );
+            const response = await axios.get(apiUrl, {
+                params: getParams(query),
+                headers: {
+                    Accept: 'application/json',
+                },
+            });
 
             if (response.status === 204) {
                 setNoResults(true);
                 setResults([]);
             } else {
                 setResults(response.data);
-                console.log(response.data);
+                processResults(response.data);
                 setNoResults(false);
                 setBadRequest(false);
                 setError(false);
@@ -71,7 +79,7 @@ const SearchBar: React.FC<SearchBarProps> = () => {
             }
             setResults([]);
         } finally {
-            setIsLoading(false); // Fin du chargement
+            setIsLoading(false);
         }
     };
 
@@ -102,7 +110,7 @@ const SearchBar: React.FC<SearchBarProps> = () => {
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
                     id="search"
-                    placeholder="Search something.."
+                    placeholder={placeholder}
                 />
             </div>
             {isLoading && <Loader />}
@@ -118,17 +126,8 @@ const SearchBar: React.FC<SearchBarProps> = () => {
                 </p>
             )}
             {!noResults && !badRequest && !error && results.length > 0 && (
-                <div className="grid gap-4">
-                    {results.map((item, index) => (
-                        <Card
-                            key={index}
-                            title={item.title}
-                            description={item.description}
-                            link={item.link}
-                            pub_date={item.pub_date}
-                            audio_link={item.audio_link}
-                        />
-                    ))}
+                <div className="w-full flex flex-col items-center">
+                    {renderResults()}
                 </div>
             )}
         </div>

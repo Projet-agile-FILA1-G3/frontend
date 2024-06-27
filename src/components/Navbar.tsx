@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import {
     NavigationMenu,
@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/navigation-menu';
 
 const Navbar: React.FC = () => {
+    const location = useLocation();
+
     return (
         <div className="flex justify-between items-center w-full p-4 bg-white shadow-md min-h-12">
             <div className="flex">
@@ -34,16 +36,16 @@ const Navbar: React.FC = () => {
                     <NavigationMenuItem>
                         <NavigationMenuLink asChild>
                             <Link
-                                to=""
-                                className={navigationMenuTriggerStyle()}
+                                to="/"
+                                className={`${navigationMenuTriggerStyle()} ${location.pathname === '/' ? 'bg-gray-200' : 'text-gray-500 hover:bg-gray-200'}`}
                             >
                                 Recherche
                             </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                             <Link
-                                to=""
-                                className={navigationMenuTriggerStyle()}
+                                to="/statistics"
+                                className={`${navigationMenuTriggerStyle()} ${location.pathname === '/statistics' ? 'bg-gray-200' : 'text-gray-500 hover:bg-gray-200'}`}
                             >
                                 Statistiques
                             </Link>
