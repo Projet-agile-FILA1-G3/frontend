@@ -37,12 +37,6 @@ const SearchPage: React.FC = () => {
         searchAPI(query, page, 10);
     };
 
-    const handleSearch = (query: string, page: number, perPage: number) => {
-        setCurrentPage(1);
-        setTotalPages(0);
-        searchAPI(query, page, perPage);
-    };
-
     const renderResults = () => {
         return (
             <div className="grid gap-4">
@@ -178,7 +172,6 @@ const SearchPage: React.FC = () => {
                 processResults={processResults}
                 renderResults={renderResults}
                 onQueryChange={handleQueryChange}
-                onSearch={handleSearch}
             />
             { totalPages !== 0 && (
                 <div className="mt-10">

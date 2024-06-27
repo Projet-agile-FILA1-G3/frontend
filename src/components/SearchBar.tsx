@@ -9,7 +9,6 @@ interface SearchBarProps {
     processResults: (data: any) => void;
     renderResults: () => JSX.Element;
     onQueryChange: (query: string) => void;
-    onSearch: (query: string, page: number, perPage: number) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -22,7 +21,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
     const [query, setQuery] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [results, setResults] = useState<any[]>([]);
     const [noResults, setNoResults] = useState<boolean>(false);
     const [badRequest, setBadRequest] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
@@ -44,7 +42,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
     const performSearch = async (query: string, page: number, perPage: number) => {
         if (query.trim() === '') {
             setBadRequest(true);
-            setResults([]);
             return;
         }
 
@@ -60,9 +57,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
             if (response.status === 204) {
                 setNoResults(true);
-                setResults([]);
             } else {
-                setResults(response.data.results);
                 processResults(response.data);
                 setNoResults(false);
                 setBadRequest(false);
@@ -78,7 +73,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
             } else {
                 setError(true);
             }
-            setResults([]);
         } finally {
             setIsLoading(false);
         }
@@ -126,7 +120,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                     An error occurred while fetching data.
                 </p>
             )}
-            {!noResults && !badRequest && !error && results.length > 0 && (
+            {!noResults && !badRequest && !error && (
                 <div className="w-full flex flex-col items-center">
                     {renderResults()}
                 </div>

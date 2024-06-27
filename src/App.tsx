@@ -8,7 +8,7 @@ import Navbar from './components/Navbar';
 const App: React.FC = () => {
     return (
         <Router>
-            <div className="w-full h-screen overflow-scroll bg-slate-50">
+            <div className="w-full h-screen bg-slate-50">
                 <Navbar />
                 <div className="pb-12">
                     <Routes>
