@@ -8,6 +8,7 @@ interface CardProps {
     link: string;
     pub_date: string;
     audio_link: string;
+    image_link: string;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -16,6 +17,7 @@ const Card: React.FC<CardProps> = ({
     link,
     pub_date,
     audio_link,
+    image_link,
 }) => {
     const formattedDate = format(
         new Date(pub_date),
@@ -37,13 +39,13 @@ const Card: React.FC<CardProps> = ({
 
     return (
         <div className="max-w-sm max-h-80 w-full lg:max-w-7xl lg:flex border-2 transition-transform duration-300 motion-safe:hover:scale-105">
-            {/* <div
+            { image_link ? (
+                <div
                 className="h-48 lg:h-auto lg:w-48 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden"
                 style={{
-                    backgroundImage:
-                        "url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Jordan_Bardella_-_Strasbourg_European_Parliament_September_2022_%28cropped%29.jpg/1024px-Jordan_Bardella_-_Strasbourg_European_Parliament_September_2022_%28cropped%29.jpg')",
-                }}
-            ></div> */}
+                    backgroundImage: `url(${image_link})`,
+                }}>
+                </div> ) : <></>}
             <div className="w-full lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
                 <div className="mb-8">
                     <a

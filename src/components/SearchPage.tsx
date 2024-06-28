@@ -25,6 +25,7 @@ const SearchPage: React.FC = () => {
 
     const processResults = (data: any) => {
         setResults(data.results);
+        setCurrentPage(1);
         setTotalPages(data.total_pages);
     };
 
@@ -50,6 +51,7 @@ const SearchPage: React.FC = () => {
                         link={item.link}
                         pub_date={item.pub_date}
                         audio_link={item.audio_link}
+                        image_link={item.image_link}
                     />
                 ))}
             </div>
