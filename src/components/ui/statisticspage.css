@@ -1,0 +1,7 @@
+.custom-selected {
+    @apply bg-orange-500 text-white !important;
+}
+
+.custom-not-selected {
+    @apply bg-white !important;
+}

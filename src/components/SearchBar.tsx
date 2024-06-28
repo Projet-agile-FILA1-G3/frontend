@@ -1,18 +1,33 @@
 import React, { useState, ChangeEvent, KeyboardEvent } from 'react';
 import axios from 'axios';
-import Card from './Card';
+import Loader from './ui/Loader';
 
-interface SearchBarProps {}
+interface SearchBarProps {
+    apiUrl: string;
+    placeholder?: string;
+    getParams: (query: string, page: number, perPage: number) => any;
+    processResults: (data: any) => void;
+    renderResults: () => JSX.Element;
+    onQueryChange: (query: string) => void;
+}
 
-const SearchBar: React.FC<SearchBarProps> = () => {
+const SearchBar: React.FC<SearchBarProps> = ({
+    apiUrl,
+    placeholder = 'Search something..',
+    getParams,
+    processResults,
+    renderResults,
+    onQueryChange,
+}) => {
     const [query, setQuery] = useState<string>('');
-    const [results, setResults] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [noResults, setNoResults] = useState<boolean>(false);
     const [badRequest, setBadRequest] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setQuery(event.target.value);
+        onQueryChange(event.target.value);
         setNoResults(false);
         setBadRequest(false);
         setError(false);
@@ -20,36 +35,35 @@ const SearchBar: React.FC<SearchBarProps> = () => {
 
     const handleKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            await searchAPI(query);
+            await performSearch(query, 1, 10); // Assuming default page = 1 and per_page = 10
         }
     };
 
-    const searchAPI = async (query: string) => {
+    const performSearch = async (
+        query: string,
+        page: number,
+        perPage: number
+    ) => {
         if (query.trim() === '') {
             setBadRequest(true);
-            setResults([]);
+            setIsLoading(false);
             return;
         }
 
+        setIsLoading(true);
+
         try {
-            const response = await axios.get(
-                `${import.meta.env.VITE_APP_API_BASE_URL}/search`,
-                {
-                    params: {
-                        query: query,
-                        limit: 10,
-                    },
-                    headers: {
-                        Accept: 'application/json',
-                    },
-                }
-            );
+            const response = await axios.get(apiUrl, {
+                params: getParams(query, page, perPage),
+                headers: {
+                    Accept: 'application/json',
+                },
+            });
 
             if (response.status === 204) {
                 setNoResults(true);
-                setResults([]);
             } else {
-                setResults(response.data);
+                processResults(response.data);
                 setNoResults(false);
                 setBadRequest(false);
                 setError(false);
@@ -64,7 +78,8 @@ const SearchBar: React.FC<SearchBarProps> = () => {
             } else {
                 setError(true);
             }
-            setResults([]);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -95,31 +110,28 @@ const SearchBar: React.FC<SearchBarProps> = () => {
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
                     id="search"
-                    placeholder="Search something.."
+                    placeholder={placeholder}
                 />
             </div>
-            {noResults && <p className="text-red-500">No results found.</p>}
+            {isLoading && <Loader />}
+            {noResults && (
+                <p className="text-orange-700">Aucun résultat trouvé.</p>
+            )}
             {badRequest && (
-                <p className="text-red-500">
-                    Bad request. Please enter a valid search term.
+                <p className="text-orange-700">
+                    Requête incorrecte. Veuillez entrer un terme de recherche
+                    valide.
                 </p>
             )}
             {error && (
-                <p className="text-red-500">
-                    An error occurred while fetching data.
+                <p className="text-orange-700">
+                    Une erreur s'est produite lors de la récupération des
+                    données.
                 </p>
             )}
-            {!noResults && !badRequest && !error && results.length > 0 && (
-                <div className="grid gap-4">
-                    {results.map((item, index) => (
-                        <Card
-                            key={index}
-                            title={item.title}
-                            description={item.description}
-                            link={item.link}
-                            pub_date={item.pub_date}
-                        />
-                    ))}
+            {!noResults && !badRequest && !error && (
+                <div className="w-full flex flex-col items-center mt-4">
+                    {renderResults()}
                 </div>
             )}
         </div>

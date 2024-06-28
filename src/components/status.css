@@ -1,0 +1,11 @@
+.status-details {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+}
+
+
+
+.status-icon:hover .status-details {
+    display: block;
+}
