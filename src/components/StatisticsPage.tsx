@@ -15,14 +15,14 @@ registerLocale('fr', fr);
 const StatisticsPage: React.FC = () => {
     const [results, setResults] = useState<any[]>([]);
     const [interval, setInterval] = useState<string>('hour');
-    const [startDate, setStartDate] = useState<Date | null>(
-        new Date('2024-01-01T00:00:00')
-    );
-    const [endDate, setEndDate] = useState<Date | null>(
-        new Date('2024-09-09T00:00:00')
-    );
-
     const [query, setQuery] = useState<string>('');
+
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    const [startDate, setStartDate] = useState<Date | null>(yesterday);
+    const [endDate, setEndDate] = useState<Date | null>(today);
 
     useEffect(() => {
         if (query) {
