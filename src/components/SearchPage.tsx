@@ -25,7 +25,6 @@ const SearchPage: React.FC = () => {
 
     const processResults = (data: any) => {
         setResults(data.results);
-        setCurrentPage(1);
         setTotalPages(data.total_pages);
     };
 
