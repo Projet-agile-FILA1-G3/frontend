@@ -39,7 +39,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
         }
     };
 
-    const performSearch = async (query: string, page: number, perPage: number) => {
+    const performSearch = async (
+        query: string,
+        page: number,
+        perPage: number
+    ) => {
         if (query.trim() === '') {
             setBadRequest(true);
             setIsLoading(false);
@@ -110,15 +114,19 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 />
             </div>
             {isLoading && <Loader />}
-            {noResults && <p className="text-red-500">No results found.</p>}
+            {noResults && (
+                <p className="text-orange-700">Aucun résultat trouvé.</p>
+            )}
             {badRequest && (
-                <p className="text-red-500">
-                    Bad request. Please enter a valid search term.
+                <p className="text-orange-700">
+                    Requête incorrecte. Veuillez entrer un terme de recherche
+                    valide.
                 </p>
             )}
             {error && (
-                <p className="text-red-500">
-                    An error occurred while fetching data.
+                <p className="text-orange-700">
+                    Une erreur s'est produite lors de la récupération des
+                    données.
                 </p>
             )}
             {!noResults && !badRequest && !error && (
